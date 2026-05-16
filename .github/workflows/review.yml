@@ -40,6 +40,9 @@ jobs:
             gh pr comment ${{ github.event.pull_request.number }} \
               --repo ${{ github.repository }} \
               --body "@claude /review"
+            gh pr edit ${{ github.event.pull_request.number }} \
+              --repo ${{ github.repository }} \
+              --add-reviewer "Copilot"
           else
             gh issue comment ${{ github.event.issue.number }} \
               --repo ${{ github.repository }} \
