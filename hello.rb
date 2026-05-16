@@ -3,4 +3,4 @@
 # シンプルな Ruby スクリプトの例です。
 # このファイルは実行時に "Hello, GitHub Actions Sandbox!" と表示します。
 
-puts "Hello, GitHub Actions Sandbox!"
+puts 'Hello, GitHub Actions Sandbox!'
