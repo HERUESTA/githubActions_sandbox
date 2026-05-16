@@ -1,0 +1,49 @@
+# Dependabot が作成した PR に対してレビュー依頼コメントを投稿するワークフロー
+name: Review
+
+on:
+  pull_request:
+    types: [labeled]
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  review:
+    if: contains(fromJSON('["review", "ruby"]'), github.event.label.name)
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      # GitHub App トークンの生成
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      # review ラベル: @claude /review を投稿
+      - name: Post review comment
+        if: github.event_name == 'pull_request' && github.event.label.name == 'review'
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "@claude /review"
+
+      # ruby ラベル: @claude /ruby を投稿
+      - name: Post ruby comment
+        if: github.event_name == 'pull_request' && github.event.label.name == 'ruby'
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "@claude /ruby"
