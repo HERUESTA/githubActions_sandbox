@@ -32,20 +32,32 @@ jobs:
 
       # review ラベル: @claude /review を投稿
       - name: Post review comment
-        if: github.event_name == 'pull_request' && github.event.label.name == 'review'
+        if: github.event.label.name == 'review'
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --repo ${{ github.repository }} \
-            --body "@claude /review"
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} \
+              --repo ${{ github.repository }} \
+              --body "@claude /review"
+          else
+            gh issue comment ${{ github.event.issue.number }} \
+              --repo ${{ github.repository }} \
+              --body "@claude /review"
+          fi
 
       # ruby ラベル: @claude /ruby を投稿
       - name: Post ruby comment
-        if: github.event_name == 'pull_request' && github.event.label.name == 'ruby'
+        if: github.event.label.name == 'ruby'
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --repo ${{ github.repository }} \
-            --body "@claude /ruby"
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} \
+              --repo ${{ github.repository }} \
+              --body "@claude /ruby"
+          else
+            gh issue comment ${{ github.event.issue.number }} \
+              --repo ${{ github.repository }} \
+              --body "@claude /ruby"
+          fi
