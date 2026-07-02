@@ -3,6 +3,8 @@ name: Claude Rule Check
 on:
   pull_request:
     types: [labeled]
+  issues:
+    types: [labeled]
 
 jobs:
   rule-check:
@@ -18,9 +20,9 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: "/rule ${{ github.event.pull_request.number }}"
+          prompt: "/rule ${{ github.event.pull_request.number || github.event.issue.number }}"
           claude_args: |
             --max-turns 10
-            --allowedTools "Bash(gh pr comment:*)"
+            --allowedTools "Bash(gh issue comment:*)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

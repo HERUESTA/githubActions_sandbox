@@ -1,5 +1,5 @@
 ---
-description: 「こんにちは」とPRにコメントする
+description: 「こんにちは」とissue/PRにコメントする
 ---
 
-`gh pr comment $1 --body "こんにちは"` を実行して、PR #$1 に「こんにちは」とコメントを投稿してください。
+`gh issue comment $1 --body "こんにちは"` を実行して、#$1 に「こんにちは」とコメントを投稿してください。
