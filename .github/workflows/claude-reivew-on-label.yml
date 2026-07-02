@@ -1,0 +1,22 @@
+# .github/workflows/claude-rule.yml
+name: Claude Rule Check
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  rule-check:
+    if: github.event.label.name == 'review'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6 # .claude/commands/rule.md を読むために必須
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "/rule ${{ github.event.pull_request.number }}"
+          claude_args: "--max-turns 10"
